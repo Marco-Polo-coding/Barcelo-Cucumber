@@ -62,8 +62,7 @@ public class GestorFechas {
                         .toList();
 
                 LocalDate hoy = LocalDate.now();
-//                LocalDate entradaDeseada = hoy.plusDays(offset + intentos); // AQUI
-                LocalDate entradaDeseada = hoy.plusDays(offset).plusDays(intentos); // Versión más clara
+                LocalDate entradaDeseada = hoy.plusDays(offset);
 
 
                 List<DiaCalendario> calendario = diasVisibles.stream()
@@ -144,9 +143,6 @@ public class GestorFechas {
             LOGGER.warn("No se pudo verificar el valor final del input.", e);
         }
     }
-
-
-
 
 
     // Clase interna auxiliar
