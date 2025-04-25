@@ -11,7 +11,6 @@ import java.time.Duration;
 
 import static com.alten.bdd.utils.WebDriverFactory.getDriver;
 
-
 public class GestorBusquedaHoteles {
 
     private static final Logger LOGGER = LogManager.getLogger(GestorBusquedaHoteles.class);
@@ -19,12 +18,15 @@ public class GestorBusquedaHoteles {
 
     private WebDriverWait wait;
 
-    // Selectores para los elementos necesarios para la búsqueda
+    // Selectores
     private final By inputDestino = By.id(props.get("selector.input.destino"));
-    private final By sugerenciaHotel = By.xpath(props.get("selector.sugerencia.hotel"));
 
     public GestorBusquedaHoteles(WebDriver driver) {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));  // Espera de 10 segundos por defecto
+    }
+
+    private By getSugerenciaHotel(String hotelName) {
+        return By.xpath(String.format(props.get("selector.sugerencia.hotel"), hotelName));
     }
 
     public void buscarHotel(String hotelName) {
@@ -36,11 +38,10 @@ public class GestorBusquedaHoteles {
             destinoInput.sendKeys(hotelName);
 
             LOGGER.debug("Esperando a que aparezca la sugerencia de hotel...");
+            By sugerenciaHotel = getSugerenciaHotel(hotelName);
             wait.until(ExpectedConditions.visibilityOfElementLocated(sugerenciaHotel));
 
             WebElement sugerencia = wait.until(ExpectedConditions.elementToBeClickable(sugerenciaHotel));
-
-
             ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", sugerencia);
             sugerencia.click();
 
@@ -52,7 +53,7 @@ public class GestorBusquedaHoteles {
         } catch (StaleElementReferenceException e) {
             LOGGER.warn("♻️ El elemento sugerido se volvió 'stale', intentando de nuevo...");
             try {
-                WebElement sugerencia = wait.until(ExpectedConditions.elementToBeClickable(sugerenciaHotel));
+                WebElement sugerencia = wait.until(ExpectedConditions.elementToBeClickable(getSugerenciaHotel(hotelName)));
                 ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", sugerencia);
                 sugerencia.click();
                 LOGGER.info("Hotel seleccionado tras reintento.");
@@ -66,4 +67,3 @@ public class GestorBusquedaHoteles {
         }
     }
 }
-

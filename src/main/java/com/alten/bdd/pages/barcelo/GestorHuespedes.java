@@ -90,7 +90,7 @@ public class GestorHuespedes {
                         btnMasNinos);
                 // waitArtificially(3);
                 ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", btnMasNinos);
-                LOGGER.info("🧒 Niño añadido (" + (i + 1) + ")");
+                LOGGER.info("Niño añadido (" + (i + 1) + ")");
                 // waitArtificially(3);
             }
 

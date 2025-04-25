@@ -68,7 +68,9 @@ public class GestorFechas {
                         .map(d -> {
                             long time = Long.parseLong(d.getAttribute("time"));
                             LocalDate fecha = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-                            boolean disponible = d.getAttribute("class").contains("valid");
+//                            boolean disponible = d.getAttribute("class").contains("valid");
+                            boolean disponible = d.getAttribute("class").contains("valid") && d.isDisplayed() && d.getSize().getHeight() > 0;
+
                             return new DiaCalendario(fecha, d, disponible);
                         })
                         .filter(d -> !d.fecha.isBefore(entradaDeseada))
@@ -128,6 +130,15 @@ public class GestorFechas {
         try {
             String valorFinal = getDriver().findElement(inputEntrada).getAttribute("value");
             LOGGER.info("Valor final en el input: [" + valorFinal + "]");
+            // Scroll hacia el input de checkin al finalizar selección
+            try {
+                WebElement input = getDriver().findElement(inputEntrada);
+                ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'start'});", input);
+                LOGGER.info("Scroll hecho hacia el input de fechas para reubicar el viewport.");
+            } catch (Exception e) {
+                LOGGER.warn("No se pudo hacer scroll hacia el input de fechas.", e);
+            }
+
         } catch (Exception e) {
             LOGGER.warn("No se pudo verificar el valor final del input.", e);
         }
