@@ -62,13 +62,14 @@ public class GestorFechas {
                         .toList();
 
                 LocalDate hoy = LocalDate.now();
-                LocalDate entradaDeseada = hoy.plusDays(offset);
+//                LocalDate entradaDeseada = hoy.plusDays(offset + intentos); // AQUI
+                LocalDate entradaDeseada = hoy.plusDays(offset).plusDays(intentos); // Versión más clara
+
 
                 List<DiaCalendario> calendario = diasVisibles.stream()
                         .map(d -> {
                             long time = Long.parseLong(d.getAttribute("time"));
                             LocalDate fecha = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-//                            boolean disponible = d.getAttribute("class").contains("valid");
                             boolean disponible = d.getAttribute("class").contains("valid") && d.isDisplayed() && d.getSize().getHeight() > 0;
 
                             return new DiaCalendario(fecha, d, disponible);
@@ -143,6 +144,10 @@ public class GestorFechas {
             LOGGER.warn("No se pudo verificar el valor final del input.", e);
         }
     }
+
+
+
+
 
     // Clase interna auxiliar
     private static class DiaCalendario {
