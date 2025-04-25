@@ -18,48 +18,60 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.alten.utils.ExtentManager;
+
 
 
 public class Hooks {
 
 	private static final Logger LOGGER = LogManager.getLogger(Hooks.class);
 	private Scenario scenario = null;
+	private static ExtentReports extent;
+	private static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
 
 	@Before
-    public void setup(Scenario scenario) throws Exception{
+	public void setup(Scenario scenario) throws Exception {
 		LOGGER.info("setup");
-        WebDriverFactory.setup();
-        this.scenario = scenario;
-    } 
-	
-    
-    @After
-    public void tearDown(Scenario scenario) throws IOException {
-    	    		
+		WebDriverFactory.setup();
+
+		if (extent == null) {
+			extent = ExtentManager.createReportIfNeeded("Barcelo Test Suite");
+		}
+
+		ExtentTest test = extent.createTest(scenario.getName());
+		extentTest.set(test);
+	}
+
+
+
+
+
+	@After
+	public void tearDown(Scenario scenario) throws IOException {
 		LOGGER.info("tearDown");
-		String screenshotName = scenario.getName().replaceAll(" ", "_");
 
-		// This takes a screenshot from the driver at save it to the specified location
-		File sourcePath = ((TakesScreenshot) WebDriverFactory.getDriver()).getScreenshotAs(OutputType.FILE);
+		File screenshot = ((TakesScreenshot) WebDriverFactory.getDriver()).getScreenshotAs(OutputType.FILE);
+		String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String screenshotPath = System.getProperty("user.dir") + "/target/cucumber-reports/" + timestamp + "_" + scenario.getName().replace(" ", "_") + ".png";
+		File destFile = new File(screenshotPath);
+		Files.copy(screenshot, destFile);
 
-		// Building up the destination path for the screenshot to save
-		// Also make sure to create a folder 'screenshots' with in the cucumber-report
-		// folder
-		DateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		File destinationPath = new File(
-				System.getProperty("user.dir") + "/target/cucumber-reports/" +  df.format(new Date()) + "_"+ screenshotName + ".png");
+		if (scenario.isFailed()) {
+			byte[] screenshotBytes = Files.toByteArray(destFile);
+			scenario.attach(screenshotBytes, "image/png", scenario.getName());
 
-		// Copy taken screenshot from source location to destination location
-		Files.copy(sourcePath, destinationPath);
-
-		// This attach the specified screenshot to the test
-	    if (scenario.isFailed()) {
-	    	byte[] screenshot = Files.toByteArray(destinationPath);
-	        scenario.attach(screenshot, "image/png", scenario.getName());
-	    }
+			extentTest.get().fail("Escenario fallido: " + scenario.getName())
+					.addScreenCaptureFromPath(destFile.getAbsolutePath());
+		} else {
+			extentTest.get().pass("Escenario pasado: " + scenario.getName());
+		}
 
 		WebDriverFactory.closeSetup();
+		extent.flush(); // importante para guardar el reporte
+	}
 
-    }
 }
 
