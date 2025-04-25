@@ -1,0 +1,65 @@
+package com.alten.bdd.steps;
+
+import com.alten.bdd.pages.barcelo.*;
+import com.alten.bdd.utils.WebDriverFactory;
+
+import io.cucumber.java.en.*;
+
+import org.openqa.selenium.WebDriver;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class BarceloSteps {
+
+    private static final Logger LOGGER = LogManager.getLogger(BarceloSteps.class);
+    private WebDriver driver = WebDriverFactory.getDriver();
+
+    private BarceloHomePage homePage;
+    private GestorDeCookies cookies;
+    private GestorFechas fechas;
+    private GestorHuespedes huespedes;
+    private GestorBusquedaReserva reserva;
+    private GestorBusquedaHoteles busquedaHoteles;
+    private ReservarPage reservarPage;
+
+    @Given("que el usuario accede a la web de Barceló")
+    public void que_el_usuario_accede_a_barcelo() {
+        homePage = new BarceloHomePage(driver);
+        cookies = new GestorDeCookies(driver);
+        fechas = new GestorFechas(driver);
+        huespedes = new GestorHuespedes(driver);
+        reserva = new GestorBusquedaReserva(driver);
+    }
+
+    @When("acepta las cookies si aparecen")
+    public void acepta_las_cookies() {
+        cookies.aceptarCookiesSiExisten();
+    }
+
+    @When("busca el hotel {string}")
+    public void busca_el_hotel(String hotelName) {
+        homePage.buscarHotel(hotelName);
+    }
+
+    @When("selecciona fechas con {int} días desde hoy y estancia de {int} días")
+    public void selecciona_las_fechas(int diasEntradaOffset, int diasEstancia) {
+        fechas.seleccionarFechas(diasEntradaOffset, diasEstancia);
+    }
+
+    @When("selecciona {int} adultos y {int} niños de {int} años")
+    public void selecciona_huespedes(int adultos, int ninos, int edadNino) {
+        huespedes.seleccionarHuespedes(adultos, ninos, String.valueOf(edadNino));
+    }
+
+    @When("hace clic en el botón de buscar")
+    public void hace_clic_en_buscar() {
+        homePage.clickBuscar();
+    }
+
+    @Then("se muestra la pestaña de reservas del hotel")
+    public void validar_pestana_reservas() {
+        ReservarPage pestanaFinal = new ReservarPage(driver);
+        pestanaFinal.cambiarPestanaFinal();
+    }
+}
+
