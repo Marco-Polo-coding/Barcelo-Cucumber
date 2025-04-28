@@ -1,8 +1,9 @@
 selector.cookies.popup=//div[contains(@class,'didomi-popup')]
 selector.cookies.aceptar=//span[normalize-space()='Aceptar y cerrar']
 selector.input.destino=destination-fb
-selector.sugerencia.hotel=(//li[contains(@class, 'mod--hover-blue') and contains(., 'Barceló Sants')])[2]
-selector.sugerencia.hotel2=(//li[contains(@class, 'mod--hover-blue') and contains(., 'Barceló Marbella')])[2]
+#selector.sugerencia.hotel=(//li[contains(@class, 'mod--hover-blue') and contains(., 'Barceló Sants')])[2]
+#selector.sugerencia.hotel2=(//li[contains(@class, 'mod--hover-blue') and contains(., 'Barceló Marbella')])[2]
+selector.sugerencia.hotel=(//li[contains(@class, 'mod--hover-blue') and contains(., '%s')])[2]
 selector.input.checkin=checkin-fb
 selector.dia.disponible=td.datepicker__month-day--valid
 selector.btn.mes.siguiente=//span[contains(@class,'datepicker__month-button--next')]
@@ -11,8 +12,13 @@ selector.nombre.mes.visible=//th[contains(@class,'datepicker__month-name')]
 selector.icono.huespedes=//div[contains(@class,'mod--select-arrow') and contains(@class,'rooms-JS')]
 selector.modal.huespedes.abierto=//div[contains(@class,'c-fastbooking__submenu-rooms') and contains(@class,'mod--active')]
 selector.btn.adultos.mas=div.c-incrementers__btn.inc-button-JS
+selector.btn.adultos.menos=div.c-incrementers__btn.dec-button-JS
 selector.btn.ninos.mas=//div[contains(@class, 'c-fieldset') and contains(., 'Niños')]//div[contains(@class,'inc-button-child-JS') and contains(@class,'inc-button-JS')]
+selector.btn.ninos.menos=//div[contains(@class, 'c-fieldset') and contains(., 'Niños')]//div[contains(@class,'dec-button-JS') and contains(@class,'dec-button-child-JS')]
 selector.edad.nino=select#child-age-number-1
+selector.edad.nino2=select#child-age-number-2
+selector.edad.nino3=select#child-age-number-3
+selector.edad.nino4=select#child-age-number-4
 selector.btn.aceptar.huespedes=//div[contains(@class,'apply-JS')]//span[normalize-space()='Aceptar']
 selector.btn.buscar=#fastbooking_cta_booking_home
 selector.spinner=div.loading-spinner

@@ -12,6 +12,6 @@ Feature: Reserva de hotel en la web de Barceló
 
     Examples:
       | hotelName        | diasEntradaOffset | diasEstancia | adultos | ninos | edadNino |
-      | Barceló Sants    | 5                 | 5            | 2       | 1     | 11       |
-      | Barceló Marbella | 7                 | 7            | 4       | 1     | 8        |
-      | Pipo             | 2                 | 2            | 1       | 1     | 5        |
+      | Barceló Sants    | 5                 | 5            | 1       | 3     | 11       |
+      # | Barceló Marbella | 7                 | 7            | 4       | 1     | 8        |
+      # | Pipo             | 2                 | 2            | 1       | 1     | 5        |

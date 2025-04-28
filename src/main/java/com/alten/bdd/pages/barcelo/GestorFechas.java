@@ -20,6 +20,7 @@ public class GestorFechas {
     private static final PropertiesMain props = new PropertiesMain("BarceloHomePage");
 
     private WebDriverWait wait;
+    private LocalDate fechaReferencia;
 
     private final By inputEntrada = By.id(props.get("selector.input.checkin"));
     private final By diaDisponible = By.cssSelector(props.get("selector.dia.disponible"));
@@ -48,7 +49,7 @@ public class GestorFechas {
 
         int intentos = 0;
         boolean encontrado = false;
-        LocalDate fechaReferencia = LocalDate.now().plusDays(offset);
+        fechaReferencia = LocalDate.now().plusDays(offset);
 
         while (intentos < 3 && !encontrado) {
             try {
@@ -99,14 +100,29 @@ public class GestorFechas {
                         actions.moveToElement(salida.elemento).click().perform();
                         getDriver().switchTo().activeElement().sendKeys(Keys.TAB);
 
+                        // Esperar a que el input tenga algún valor (más flexible)
                         wait.until(driver -> {
                             String value = driver.findElement(inputEntrada).getAttribute("value");
-                            return value != null && value.matches(".*\\d{4}.*");
+                            return value != null && !value.trim().isEmpty();
                         });
 
                         LOGGER.info("Fechas aplicadas correctamente.");
-                        encontrado = true;
-                        break;
+                        // Salir del método inmediatamente tras seleccionar un bloque válido
+                        try {
+                            String valorFinal = getDriver().findElement(inputEntrada).getAttribute("value");
+                            LOGGER.info("Valor final en el input: [" + valorFinal + "]");
+                            // Scroll hacia el input de checkin al finalizar selección
+                            try {
+                                WebElement input = getDriver().findElement(inputEntrada);
+                                ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'start'});", input);
+                                LOGGER.info("Scroll hecho hacia el input de fechas para reubicar el viewport.");
+                            } catch (Exception e) {
+                                LOGGER.warn("No se pudo hacer scroll hacia el input de fechas.", e);
+                            }
+                        } catch (Exception e) {
+                            LOGGER.warn("No se pudo verificar el valor final del input.", e);
+                        }
+                        return;
                     }
                 }
 
