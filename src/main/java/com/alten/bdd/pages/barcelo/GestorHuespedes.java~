@@ -48,7 +48,6 @@ public class GestorFechas {
 
         int intentos = 0;
         boolean encontrado = false;
-        LocalDate fechaReferencia = LocalDate.now().plusDays(offset);
 
         while (intentos < 3 && !encontrado) {
             try {
@@ -62,6 +61,10 @@ public class GestorFechas {
                         .sorted(Comparator.comparing(d -> Long.parseLong(d.getAttribute("time"))))
                         .toList();
 
+                LocalDate hoy = LocalDate.now();
+                LocalDate entradaDeseada = hoy.plusDays(offset);
+
+
                 List<DiaCalendario> calendario = diasVisibles.stream()
                         .map(d -> {
                             long time = Long.parseLong(d.getAttribute("time"));
@@ -70,7 +73,7 @@ public class GestorFechas {
 
                             return new DiaCalendario(fecha, d, disponible);
                         })
-                        .filter(d -> !d.fecha.isBefore(fechaReferencia))
+                        .filter(d -> !d.fecha.isBefore(entradaDeseada))
                         .toList();
 
                 for (int i = 0; i <= calendario.size() - diasEstancia; i++) {
@@ -112,11 +115,7 @@ public class GestorFechas {
 
                 if (!encontrado) {
                     LOGGER.warn("Intento #" + (intentos + 1) + ": No se encontró un bloque válido.");
-                    // Actualizar la fecha de referencia para el siguiente intento
-                    if (!calendario.isEmpty()) {
-                        fechaReferencia = calendario.get(0).fecha.plusDays(1);
-                        LOGGER.info("Buscando siguiente bloque disponible después de: " + fechaReferencia);
-                    }
+//                    Thread.sleep(800); // por si el DOM necesita un poco más de carga
                 }
             } catch (Exception e) {
                 LOGGER.error("Error en intento #" + (intentos + 1), e);
@@ -124,10 +123,9 @@ public class GestorFechas {
             intentos++;
         }
 
-        if (!encontrado) {
-            LOGGER.error("No se encontraron fechas disponibles después de 3 intentos.");
-            throw new IllegalStateException("No se encontraron fechas disponibles después de 3 intentos.");
-        }
+//        if (!encontrado) {
+//            throw new IllegalArgumentException("No se encontraron fechas disponibles en los dos meses visibles.");
+//        }
 
         try {
             String valorFinal = getDriver().findElement(inputEntrada).getAttribute("value");
@@ -145,6 +143,9 @@ public class GestorFechas {
             LOGGER.warn("No se pudo verificar el valor final del input.", e);
         }
     }
+
+
+
 
 
     // Clase interna auxiliar

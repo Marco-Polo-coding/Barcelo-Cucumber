@@ -1,0 +1,7 @@
+package com.alten.utils;
+
+public class ScreenShots {
+    public static void main(String[] Args) {
+        //s
+    }
+}

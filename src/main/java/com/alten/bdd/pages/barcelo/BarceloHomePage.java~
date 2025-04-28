@@ -1,0 +1,7 @@
+package com.alten.bdd.pages.barcelo;
+
+public class BarceloHomePage {
+    public static void main(String[] Args) {
+        //s
+    }
+}
