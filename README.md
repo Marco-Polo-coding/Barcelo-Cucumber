@@ -1,26 +1,27 @@
-# IMDB PROJECT
+# Proyecto de Automatización Barceló
 
-IMDB Project Testing is a project to training on QA Automation using the following:
-	Java
-	JUnit
-	Selenium
-	Cucumber
-	Extent Report
-_____________________________________
+## 🏨 Descripción
+Este proyecto implementa pruebas automatizadas para el sitio web de Barceló, permitiendo la verificación de funcionalidades clave como:
+- Búsqueda de hoteles
+- Gestión de fechas de reserva
+- Gestión de huéspedes
+- Proceso de reserva
+- Gestión de cookies
 
+## 🛠️ Tecnologías Utilizadas
+- Java
+- JUnit
+- Selenium
+- Cucumber
+- Extent Report
 
-## Run All tests
+## 🚀 Cómo Ejecutar las Pruebas
+Para ejecutar todas las pruebas del proyecto, simplemente ejecuta:
 
-`mvn clean test`
+```bash
+mvn clean test
+```
 
-## Run Login Feature tests
-
-`mvn clean test -Dcucumber.options=' --tags @SignIn'`
-
-### Run Concrete error scenarios only
-
-`mvn clean test -Dcucumber.options=' --tags @LoginIncorrect'`
-
-##  Reporting
-
-execution reports: target/cucumber-reports/report.html
+## 📊 Reportes
+Después de la ejecución, puedes encontrar los reportes detallados en:
+`target/cucumber-reports/report.html`
